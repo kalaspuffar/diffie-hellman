@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;                
+        }
+        .content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            padding: 0 20px;
+            font-size: 30pt;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        input {
+            font-size: 30pt;
+            padding: 0;
+            width: 60px;
+        }
+
+        .red {
+            color: #DD0000;
+        }
+        .blue {
+            color: #0000DD;
+        }
+
+        h1 {
+            padding: 0;
+            margin: 20px 0;
+            font-size: 30pt;
+        }
+
+        button {
+            margin: 20px 0;
+            padding: 5px;
+            font-size: 20pt;
+        }
+
+        input.red {
+            width: 150px;
+        }
+
+        .content>div {
+            padding: 20px;
+            border: 2px dashed black;
+            margin: 10px;
+        }
+    </style>    
+</head>
+<body>
+    <div class="content">
+        <div>
+            <h1>ALICE sending</h1>
+            <div>
+                <input placeholder="g" class="blue" id="aliceG" onkeyup="inputGValue(event)" /> ^
+                <input placeholder="secret" class="red" id="aliceSecret" onkeyup="inputAliceSecretValue(event)" />
+                 mod <input placeholder="n" class="blue" id="aliceN" onkeyup="inputNValue(event)" /> = 
+                <span class="blue" id="aliceValueToSend"></span><br/>
+                <button onclick="javascript:aliceSending();">Calculate</button>
+            </div>        
+        </div>
+        <div>
+            <h1>BOB sending</h1>
+            <div>
+                <input placeholder="g" class="blue" id="bobG" onkeyup="inputGValue(event)" /> ^
+                <input placeholder="secret" class="red" id="bobSecret" onkeyup="inputBobSecretValue(event)" />
+                 mod <input placeholder="n" class="blue" id="bobN" onkeyup="inputNValue(event)"/> = 
+                <span class="blue" id="bobValueToSend"></span><br/>
+                <button onclick="javascript:bobSending();">Calculate</button>
+            </div>     
+        </div>
+        <div>
+            <h1>ALICE preparing shared secret</h1>
+            <div>
+                <input class="blue" id="bobSentValue" /> ^
+                <input placeholder="secret" class="red" id="aliceSecret2" onkeyup="inputAliceSecretValue(event)" />
+                 mod <input placeholder="n" class="blue" id="aliceN2" onkeyup="inputNValue(event)"/> = 
+                <span class="red" id="aliceSecretResult"></span><br/>
+                <button onclick="javascript:aliceCalculateSecret();">Calculate</button>
+            </div>
+        </div>
+        <div>
+            <h1>BOB preparing shared secret</h1>
+            <div>
+                <input class="blue" id="aliceSentValue" /> ^
+                <input placeholder="secret" class="red" id="bobSecret2" onkeyup="inputBobSecretValue(event)" />
+                 mod <input placeholder="n" class="blue" id="bobN2"  onkeyup="inputNValue(event)"/> = 
+                <span class="red" id="bobSecretResult"></span><br/>
+                <button onclick="javascript:bobCalculateSecret();">Calculate</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function inputAliceSecretValue(e) {
+            const aliceSecret = document.getElementById("aliceSecret");
+            const aliceSecret2 = document.getElementById("aliceSecret2");
+            aliceSecret.value = aliceSecret2.value = e.target.value;
+        }
+
+        function inputBobSecretValue(e) {
+            const bobSecret = document.getElementById("bobSecret");
+            const bobSecret2 = document.getElementById("bobSecret2");
+            bobSecret.value = bobSecret2.value = e.target.value;
+        }
+
+        function inputGValue(e) {
+            const aliceG = document.getElementById("aliceG");
+            const bobG = document.getElementById("bobG");
+            aliceG.value = bobG.value = e.target.value;
+        }
+
+        function inputNValue(e) {
+            const aliceN = document.getElementById("aliceN");
+            const aliceN2 = document.getElementById("aliceN2");
+            const bobN = document.getElementById("bobN");
+            const bobN2 = document.getElementById("bobN2");
+            aliceN.value = aliceN2.value = bobN.value = bobN2.value = e.target.value;
+        }
+
+        function aliceSending() {
+            const aliceG = parseInt(document.getElementById("aliceG").value);
+            const aliceSecret = parseInt(document.getElementById("aliceSecret").value);
+            const aliceN = parseInt(document.getElementById("aliceN").value);
+            const aliceValueToSend = document.getElementById("aliceValueToSend");
+            const aliceSentValue = document.getElementById("aliceSentValue");
+
+            aliceValueToSend.innerHTML = (aliceG ** aliceSecret) % aliceN;
+            aliceSentValue.value = (aliceG ** aliceSecret) % aliceN;
+        }
+
+        function bobSending() {
+            const bobG = parseInt(document.getElementById("bobG").value);
+            const bobSecret = parseInt(document.getElementById("bobSecret").value);
+            const bobN = parseInt(document.getElementById("bobN").value);
+            const bobValueToSend = document.getElementById("bobValueToSend");
+            const bobSentValue = document.getElementById("bobSentValue");
+
+            bobValueToSend.innerHTML = (bobG ** bobSecret) % bobN;
+            bobSentValue.value = (bobG ** bobSecret) % bobN;
+        }
+
+        function aliceCalculateSecret() {
+            const bobSentValue = parseInt(document.getElementById("bobSentValue").value);
+            const aliceSecret2 = parseInt(document.getElementById("aliceSecret2").value);
+            const aliceN2 = parseInt(document.getElementById("aliceN2").value);
+            const aliceSecretResult = document.getElementById("aliceSecretResult");
+
+            aliceSecretResult.innerHTML = (bobSentValue ** aliceSecret2) % aliceN2;
+        }
+
+        function bobCalculateSecret() {
+            const aliceSentValue = parseInt(document.getElementById("aliceSentValue").value);
+            const bobSecret2 = parseInt(document.getElementById("bobSecret2").value);
+            const bobN2 = parseInt(document.getElementById("bobN2").value);
+            const bobSecretResult = document.getElementById("bobSecretResult");
+
+            bobSecretResult.innerHTML = (aliceSentValue ** bobSecret2) % bobN2;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Find base values</title>
+        <style>
+            html, body {
+                padding: 0;
+                margin: 0;                
+            }
+            table td {
+                border-top: 1px solid #333;                
+            }
+            table td:nth-child(2) {
+                text-align: right;
+                border-left: 1px solid #333;
+            }
+    
+            th.title {
+                text-align: right;
+            }
+            #table {
+                padding-top: 20px;
+            }
+            .content {
+                padding: 20px;
+                font-size: 30pt;
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            }
+            input {
+                font-size: 30pt;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content">
+            <table>
+                <tr>
+                    <th class="title">Base (g):</th>
+                    <th><input id="g" /></th>
+                </tr>
+                <tr>
+                    <th class="title">Primative Root (n):</th>
+                    <th><input id="n" /></th>
+                </tr>
+            </table>
+            <button onclick="javascript:createTable();">Create table</button>
+            <br/>
+            <br/>
+            <div id="table"></div>        
+        </div>
+        <script>
+            function createTable() {
+                const g = parseInt(document.getElementById("g").value);
+                const n = parseInt(document.getElementById("n").value);
+                const tableDiv = document.getElementById("table");
+                tableDiv.innerHTML = "";
+                const table = document.createElement("table");
+                const headerRow = document.createElement("tr");
+                const calcTH = document.createElement("th");
+                const sumTH = document.createElement("th");
+                calcTH.innerHTML = "Calculation";
+                sumTH.innerHTML = "Sum";
+                headerRow.appendChild(calcTH);
+                headerRow.appendChild(sumTH);
+                table.appendChild(headerRow);
+
+                let values = [];
+                for (let i=0; i<n+1; i++) {
+                    let row = document.createElement("tr");
+                    let calcTD = document.createElement("td");
+                    let sumTD = document.createElement("td");
+                    calcTD.innerHTML = g + "<sup>" + i + "</sup> mod " + n;
+                    values[i] = (g ** i) % n;
+                    sumTD.innerHTML = (g ** i) % n;
+                    row.appendChild(calcTD);
+                    row.appendChild(sumTD);
+                    table.appendChild(row);
+                }
+
+                let correct = true;
+                for (let i=0; i<n+1; i++) {
+                    if(values[i] < 1) {
+                        correct = false;
+                        break;
+                    }
+                }
+                if(correct) {
+                    document.body.style.backgroundColor = '#DDFFDD';
+                } else {
+                    document.body.style.backgroundColor = '#FFDDDD';
+                }
+
+                tableDiv.appendChild(table);
+            }
+        </script>
+    </body>
+</html>
