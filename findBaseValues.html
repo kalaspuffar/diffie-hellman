@@ -44,159 +44,63 @@
                     <th><input id="n" /></th>
                 </tr>
             </table>
-            <button onclick="javascript:createTable();">Create table</button>
+            <button onclick="javascript:findPrimitiveRoots();">Create table</button>
             <br/>
             <br/>
             <div id="result"></div>
         </div>
         <script>
-            function createTable() {
-                var n = parseInt(document.getElementById("n").value);
-                const resultDiv = document.getElementById("result");
+function findPrimitiveRoots() {
+    var n = parseInt(document.getElementById("n").value);
+    const resultDiv = document.getElementById("result");
 
-                resultDiv.innerHTML = "Value is not a prime";                    
-                if (primes.indexOf(n) != -1) {
-                    resultDiv.innerHTML = "Value is a prime";                    
-                }
+    resultDiv.innerHTML = "Value is not a prime";                    
+    if (primes.indexOf(n) != -1) {
+        resultDiv.innerHTML = "Value is a prime";                    
+    }
 
-                eulerTotient = n;
-                if (primes.indexOf(n) != -1) eulerTotient = n - 1;
-                var num = eulerTotient;
-                var i = 0;
-                var foundPrimes = [];
+    eulerTotient = n;
+    if (primes.indexOf(n) != -1) eulerTotient = n - 1;
+    var num = eulerTotient;
+    var i = 0;
+    var foundPrimes = [];
 
-                while (num != 1) {
-                    if(num % primes[i] == 0) {
-                        foundPrimes.push(primes[i]);
-                        num = num / primes[i];
-                        continue;
-                    }                     
-                    i++;
-                }
+    while (num != 1) {
+        if(num % primes[i] == 0) {
+            foundPrimes.push(primes[i]);
+            num = num / primes[i];
+            continue;
+        }                     
+        i++;
+    }
 
-                resultDiv.innerHTML += "<br>Found primes = " + foundPrimes.join(", ");
+    resultDiv.innerHTML += "<br>Found primes = " + foundPrimes.join(", ");
 
-                var uniquePrimes = foundPrimes.filter( (value, index, self) =>
-                    self.indexOf(value) === index
-                );
+    var uniquePrimes = foundPrimes.filter( (value, index, self) =>
+        self.indexOf(value) === index
+    );
 
-                resultDiv.innerHTML += "<br>Found uniquePrimes = " + uniquePrimes.join(", ");
+    resultDiv.innerHTML += "<br>Found uniquePrimes = " + uniquePrimes.join(", ");
 
-                var powersToTest = uniquePrimes.map( (value) =>
-                    eulerTotient / value
-                );
+    var powersToTest = uniquePrimes.map( (value) =>
+        eulerTotient / value
+    );
 
-                resultDiv.innerHTML += "<br>Powers to test = " + powersToTest.join(", ");
+    resultDiv.innerHTML += "<br>Powers to test = " + powersToTest.join(", ");
 
-                var foundPrimitiveRoots = [];
-                if (primes.indexOf(n) != -1) {
-                    outerLoop:
-                    for (var i = 2; i < n; i++) {
-                        for (var j = 0; j < powersToTest.length; j++) {
-                            if(Math.pow(i, powersToTest[j]) % n == 1) continue outerLoop;
-                        }
-                        foundPrimitiveRoots.push(i);
-                    }
-                }
-
-                resultDiv.innerHTML += "<br>Found g values = " + foundPrimitiveRoots.join(", ");
-
-/*
-                var foundRoots = [];
-                for (var r=2; r<n; r++) {
-                    var result = [];
-                    for (var x=0; x<n-1; x++) {
-                        result[x] = (r ** x) % n;
-                    }
-                    var sortedResult = result.sort();
-                    var lastValue = 0;
-                    var found = true;
-                    for (var x=0; x<n-1; x++) {
-                        if(sortedResult[x] == lastValue) {
-                            found = false;
-                            break;
-                        }
-                        lastValue = sortedResult[x];
-                    }
-                    if(found) {
-                        if(isPrime(r)) {
-                            foundRoots.push(r);
-                            break;
-                        }
-                    }
-                }
-*/
-                
-/*
-A simple solution is to try all numbers from 2 to n-1. For every number r,
-compute values of r^x(mod n) where x is in range[0, n-2].
-If all these values are different, then return r, else continue for next value of r.
-If all values of r are tried, return -1.
-*/
-
-                /*
-                const g = parseInt(document.getElementById("g").value);
-                const resultDiv = document.getElementById("result");
-                resultDiv.innerHTML = "";
-                const table = document.createElement("table");
-                const headerRow = document.createElement("tr");
-                const calcTH = document.createElement("th");
-                const sumTH = document.createElement("th");
-
-
-                calcTH.innerHTML = "Calculation";
-                sumTH.innerHTML = "Sum";
-                headerRow.appendChild(calcTH);
-                headerRow.appendChild(sumTH);
-                table.appendChild(headerRow);
-
-                let values = [];
-                for (let i=0; i<n+1; i++) {
-                    let row = document.createElement("tr");
-                    let calcTD = document.createElement("td");
-                    let sumTD = document.createElement("td");
-                    calcTD.innerHTML = g + "<sup>" + i + "</sup> mod " + n;
-                    values[i] = (g ** i) % n;
-                    sumTD.innerHTML = (g ** i) % n;
-                    row.appendChild(calcTD);
-                    row.appendChild(sumTD);
-                    table.appendChild(row);
-                }
-
-                let correct = true;
-                for (let i=0; i<n+1; i++) {
-                    if(values[i] < 1) {
-                        correct = false;
-                        break;
-                    }
-                }
-                if(correct) {
-                    document.body.style.backgroundColor = '#DDFFDD';
-                } else {
-                    document.body.style.backgroundColor = '#FFDDDD';
-                }
-
-                resultDiv.appendChild(table);
-                */
-/*
-            function isPrime(n) {
-                // Corner cases
-                if (n <= 1) return false;
-                //if (n <= 3) return true;
-
-                // This is checked so that we can skip
-                // middle five numbers in below loop
-                if (n % 2 == 0 || n % 3 == 0) return false;
-
-                for (var i = 5; (i*i) <= n; i = i+6) {
-                    if (n % i == 0 || n % (i+2) == 0)
-                        return false;
-                }
-
-                return true;
+    var foundPrimitiveRoots = [];
+    if (primes.indexOf(n) != -1) {
+        outerLoop:
+        for (var i = 2; i < n; i++) {
+            for (var j = 0; j < powersToTest.length; j++) {
+                if(Math.pow(i, powersToTest[j]) % n == 1) continue outerLoop;
             }
-*/                
-            }
+            foundPrimitiveRoots.push(i);
+        }
+    }
+
+    resultDiv.innerHTML += "<br>Found g values = " + foundPrimitiveRoots.join(", ");
+}
         </script>
     </body>
 </html>
