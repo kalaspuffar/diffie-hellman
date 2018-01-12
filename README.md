@@ -1,2 +1,2 @@
-# diffie-helman
-Simple visualization of the diffie-helman algorithm
+# diffie-hellman
+Simple visualization of the diffie-hellman algorithm
