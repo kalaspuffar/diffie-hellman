@@ -35,72 +35,76 @@
             }
         </style>
         <script src="primes.js"></script>
+        <script src="big.js"></script>
     </head>
     <body>
         <div class="content">
             <table>
                 <tr>
-                    <th class="title">Primative Root (n):</th>
+                    <th class="title">Prime (n):</th>
                     <th><input id="n" /></th>
                 </tr>
             </table>
-            <button onclick="javascript:findPrimitiveRoots();">Create table</button>
+            <button onclick="javascript:findPrimitiveRoots();">Find primative roots</button>
             <br/>
             <br/>
             <div id="result"></div>
         </div>
         <script>
-function findPrimitiveRoots() {
-    var n = parseInt(document.getElementById("n").value);
-    const resultDiv = document.getElementById("result");
+            function findPrimitiveRoots() {
+                var n = parseInt(document.getElementById("n").value);
+                const resultDiv = document.getElementById("result");
 
-    resultDiv.innerHTML = "Value is not a prime";                    
-    if (primes.indexOf(n) != -1) {
-        resultDiv.innerHTML = "Value is a prime";                    
-    }
+                resultDiv.innerHTML = "Value is not a prime";                    
+                if (primes.indexOf(n) != -1) {
+                    resultDiv.innerHTML = "Value is a prime";                    
+                }
 
-    eulerTotient = n;
-    if (primes.indexOf(n) != -1) eulerTotient = n - 1;
-    var num = eulerTotient;
-    var i = 0;
-    var foundPrimes = [];
+                eulerTotient = n;
+                if (primes.indexOf(n) != -1) eulerTotient = n - 1;
+                var num = eulerTotient;
+                var i = 0;
+                var foundPrimes = [];
 
-    while (num != 1) {
-        if(num % primes[i] == 0) {
-            foundPrimes.push(primes[i]);
-            num = num / primes[i];
-            continue;
-        }                     
-        i++;
-    }
+                while (num != 1) {
+                    if(num % primes[i] == 0) {
+                        foundPrimes.push(primes[i]);
+                        num = num / primes[i];
+                        continue;
+                    }                     
+                    i++;
+                }
 
-    resultDiv.innerHTML += "<br>Found primes = " + foundPrimes.join(", ");
+                resultDiv.innerHTML += "<br>Found primes = " + foundPrimes.join(", ");
 
-    var uniquePrimes = foundPrimes.filter( (value, index, self) =>
-        self.indexOf(value) === index
-    );
+                var uniquePrimes = foundPrimes.filter( (value, index, self) =>
+                    self.indexOf(value) === index
+                );
 
-    resultDiv.innerHTML += "<br>Found uniquePrimes = " + uniquePrimes.join(", ");
+                resultDiv.innerHTML += "<br>Found uniquePrimes = " + uniquePrimes.join(", ");
 
-    var powersToTest = uniquePrimes.map( (value) =>
-        eulerTotient / value
-    );
+                var powersToTest = uniquePrimes.map( (value) =>
+                    eulerTotient / value
+                );
 
-    resultDiv.innerHTML += "<br>Powers to test = " + powersToTest.join(", ");
+                resultDiv.innerHTML += "<br>Powers to test = " + powersToTest.join(", ");
 
-    var foundPrimitiveRoots = [];
-    if (primes.indexOf(n) != -1) {
-        outerLoop:
-        for (var i = 2; i < n; i++) {
-            for (var j = 0; j < powersToTest.length; j++) {
-                if(Math.pow(i, powersToTest[j]) % n == 1) continue outerLoop;
+                var foundPrimitiveRoots = [];
+                if (primes.indexOf(n) != -1) {
+                    
+                    outerLoop:
+                    for (var i = 2; i < n; i++) {
+                        for (var j = 0; j < powersToTest.length; j++) {
+                            var x = new Big(i);
+                            if(x.pow(powersToTest[j]).mod(n) == 1) continue outerLoop;
+                        }
+                        foundPrimitiveRoots.push(i);
+                    }
+
+                }
+
+                resultDiv.innerHTML += "<br>Found g values = " + foundPrimitiveRoots.join(", ");
             }
-            foundPrimitiveRoots.push(i);
-        }
-    }
-
-    resultDiv.innerHTML += "<br>Found g values = " + foundPrimitiveRoots.join(", ");
-}
         </script>
     </body>
 </html>
